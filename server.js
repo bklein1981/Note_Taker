@@ -1,6 +1,7 @@
 //required modules
 const express = require('express');
 const path = require('path');
+const api = require('./routes/index.js');
 
 // port for Hiroku
 const PORT = process.env.PORT || 3001;
@@ -11,7 +12,7 @@ const app = express();
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use('/api', api);
+app.use('/api', api);
 
 //assign public folder
 app.use(express.static('public'));
@@ -21,10 +22,14 @@ app.get('/', (req, res) =>
  res.sendFile(path.join(__dirname, 'public/index.html'))
 );
 
-//Get route for notes
-app.get('/notes', (req, res) =>
-res.sendFile(path.join(__dirname, 'public/notes.html'))
+app.get ('/notes', (req, res) =>
+res.sendFile(path.join(__dirname, 'public/notes.html')) 
 );
+
+//Reroute to homepage for any non existing pages/routes
+app.get('*', (req, res) => 
+res.sendFile(path.join(__dirname, 'public/index.html'))
+)
 
 //listen
 app.listen(PORT, () => {
