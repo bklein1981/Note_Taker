@@ -10,15 +10,17 @@ const PORT = process.env.PORT || 3001;
 //initiate express
 const app = express();
 
-app.use(clog);
+//app.use(clog);
 
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', api);
+
 
 //assign public folder
 app.use(express.static('public'));
+
+app.use('/api', api);
 
 //get route for homepage
 app.get('/', (req, res) => 

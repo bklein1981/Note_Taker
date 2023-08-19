@@ -1,6 +1,7 @@
 //required modules
 const notes = require('express').Router();
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 //Get route for retreiving notes
 notes.get('/', (req, res) => {
@@ -19,7 +20,7 @@ notes.get('/', (req, res) => {
 notes.post('/', (req, res) => {
     const { title, text } = req.body;
     if (title && text) {
-        const newNote = { title, text };
+        const newNote = { title, text, id:uuidv4() };
 
         fs.readFile('./db/db.json', 'utf8', (err, data) => {
             if (err) {
@@ -29,11 +30,12 @@ notes.post('/', (req, res) => {
                 noteData.push(newNote);
                 fs.writeFile('./db/db.json', JSON.stringify(noteData), function (err) {
                     console.log('file was saved');
+                    res.status(201).json(noteData);
                 }
                 );
             }
         });
-        res.status(201);
+        
     } else {
         res.status(500).json('Error in posting note');
     }
