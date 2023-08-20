@@ -14,7 +14,7 @@ notes.get('/', (req, res) => {
             return res.json(JSON.parse(data));
         }
     })
-})
+});
 
 //Post route for displaying notes
 notes.post('/', (req, res) => {
@@ -42,7 +42,29 @@ notes.post('/', (req, res) => {
 });
 
 notes.delete('/:id', (req, res) => {
-    console.log('delete request received');
+    const { id } = req.params;
+    let newArray = [];
+    if (id) {
+        const delNote = {id};
+        fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        noteArray = JSON.parse(data);
+        for (i=0; i<noteArray.length; i++) {
+            if (noteArray[i].id === delNote.id) {
+                console.log(delNote.id);
+                newArray = noteArray.splice(i, 1);
+                fs.writeFile('./db/db.json', JSON.stringify(noteArray), function (err) {
+                    console.log('Note deleted')
+                    res.status(201).json(noteArray);
+                });
+            }
+    }
+        });
+
+    }else {
+        res.status(500).json('Error in deleting note');
+    }
+    
+
 });
 
 module.exports = notes;
